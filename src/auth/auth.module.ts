@@ -14,7 +14,7 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guard/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guard/roles/roles.guard';
-import { Accommodation } from 'src/entities/accommodation.entity';
+import { Accommodation } from 'src/entities/employee.entity';
 
 @Module({
   imports: [

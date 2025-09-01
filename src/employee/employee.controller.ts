@@ -10,14 +10,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  Req,
-  UnauthorizedException,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
-import { AccommodationService } from './accommodation.service';
-import { CreateAccommodationDto } from './dto/createAccommodation.dto';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { Role } from 'src/auth/enum/role.enum';
 import { AuthenticatedUser } from 'src/auth/decorators/authenticated-user.decorators';
@@ -25,29 +20,28 @@ import { User } from 'src/entities/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImageUploadValidationPipe } from 'src/cloudinary/pipes/image-validation.pipe';
-import { UpdateAccommodationDto } from './dto/updateAccommodation.dto';
-import { ParseThenValidatePipe } from 'src/common/pipes/parse-json-fields.pipe';
 import { UploadApiResponse } from 'cloudinary';
+import { EmployeeService } from './employee.service';
+import { CreateEmployeeDto } from './dto/createEmployee.dto';
+import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
 // import { ParseJsonFieldsPipe } from 'src/common/pipes/parse-json-fields.pipe';
 
-@Controller('accommodation')
-export class AccommodationController {
+@Controller('employee')
+export class EmployeeController {
   constructor(
-    private accommodationService: AccommodationService,
+    private employeeService: EmployeeService,
     private cloudinaryService: CloudinaryService,
   ) {}
 
   @Roles(Role.USER)
   @Post('create')
   @UseInterceptors(FileInterceptor('image'))
-  async createAccommodation(
-    @Body() dto: CreateAccommodationDto,
+  async createEmployee(
+    @Body() dto: CreateEmployeeDto,
     @UploadedFile(new ImageUploadValidationPipe({ required: true }))
     image: Express.Multer.File,
     @AuthenticatedUser() user: User,
   ) {
-    console.log(typeof dto.amenity, 'dto');
-
     {
       if (!image) throw new BadRequestException('Image is required');
 
@@ -57,32 +51,30 @@ export class AccommodationController {
         image_public_id: uploadResult?.public_id as string,
       };
 
-      return this.accommodationService.createAccommodation(dto, user);
+      return this.employeeService.createEmployee(dto, user);
     }
   }
 
   @Roles(Role.USER)
   @Patch('update/:id')
   @UseInterceptors(FileInterceptor('image'))
-  async updateAccommodation(
+  async updateEmployee(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() dto: UpdateAccommodationDto,
+    @Body() dto: UpdateEmployeeDto,
     @UploadedFile(new ImageUploadValidationPipe({ required: false }))
     updatedImage: Express.Multer.File | undefined,
     @AuthenticatedUser() user: User,
   ) {
-    const existingAccommodation =
-      await this.accommodationService.findOneWithId(id);
-    if (!existingAccommodation)
-      throw new NotFoundException('Accommodation not found');
+    const existingEmployee = await this.employeeService.findOneWithId(id);
+    if (!existingEmployee) throw new NotFoundException('Employee not found');
     console.log(
-      existingAccommodation?.image?.image_public_id,
-      'existingAccommodation?.image?.image_public_id',
+      existingEmployee?.image?.image_public_id,
+      'existingEmployee?.image?.image_public_id',
     );
 
-    if (existingAccommodation?.user.id !== user.id)
+    if (existingEmployee?.user.id !== user.id)
       throw new ForbiddenException(
-        'You are not allowed to update this accommodation',
+        'You are not allowed to update this employee',
       );
     let uploadResult: UploadApiResponse | undefined;
 
@@ -98,20 +90,22 @@ export class AccommodationController {
         };
       }
 
-      const updatedAccommodation =
-        await this.accommodationService.updateAccommodation(id, dto);
+      const updatedEmployee = await this.employeeService.updateEmployee(
+        id,
+        dto,
+      );
 
-      if (updatedImage && existingAccommodation?.image?.image_public_id) {
+      if (updatedImage && existingEmployee?.image?.image_public_id) {
         await this.cloudinaryService
-          .deleteImage(existingAccommodation.image.image_public_id)
+          .deleteImage(existingEmployee.image.image_public_id)
           .catch((err) =>
             console.warn('Failed to delete old image:', err?.message ?? err),
           );
       }
 
       return {
-        message: 'Accommodation Updated Successfully',
-        data: updatedAccommodation,
+        message: 'Employee Updated Successfully',
+        data: updatedEmployee,
       };
     } catch (error) {
       if (uploadResult) {
@@ -124,33 +118,32 @@ export class AccommodationController {
 
   @Roles(Role.USER)
   @Delete('delete/:id')
-  async deleteAccommodation(
+  async deleteEmployee(
     @Param('id', new ParseUUIDPipe()) id: string,
     @AuthenticatedUser() user: User,
   ) {
-    const getAccommodation = await this.accommodationService.findOneWithId(id);
-    if (user.id !== getAccommodation?.user.id) {
+    const getEmployee = await this.employeeService.findOneWithId(id);
+    if (user.id !== getEmployee?.user.id) {
       throw new ForbiddenException(
-        'You are not allowed to update this accommodation',
+        'You are not allowed to update this employee',
       );
     }
-    if (getAccommodation?.image) {
+    if (getEmployee?.image) {
       await this.cloudinaryService.deleteImage(
-        getAccommodation.image.image_public_id,
+        getEmployee.image.image_public_id,
       );
     }
-    await this.accommodationService.deleteAccommodation(id);
-    return { message: 'Accommodation Deleted Successfully' };
+    await this.employeeService.deleteEmployee(id);
+    return { message: 'Employee Deleted Successfully' };
   }
 
   @Roles(Role.USER)
-  @Get('all-accommodations')
-  async getAllAccommodations() {
-    const allAccommodations =
-      await this.accommodationService.getAllAccommodations();
+  @Get('all-employees')
+  async getAllEmployees() {
+    const allEmployees = await this.employeeService.getAllEmployees();
     return {
-      message: 'All Accommodations Fetched Successfully',
-      data: allAccommodations,
+      message: 'All Employees Fetched Successfully',
+      data: allEmployees,
     };
   }
 }
