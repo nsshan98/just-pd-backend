@@ -17,15 +17,27 @@ import { RolesGuard } from './guard/roles/roles.guard';
 import { Accommodation } from 'src/entities/accommodation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Accommodation]),
-  JwtModule.registerAsync(jwtConfig.asProvider()), ConfigModule.forFeature(jwtConfig), ConfigModule.forFeature(refreshJwtConfig)],
+  imports: [
+    TypeOrmModule.forFeature([User, Accommodation]),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(refreshJwtConfig),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, LocalStrategy, JwtStrategy, RefreshJwtStrategy, {
-    provide: APP_GUARD,
-    useClass: JwtAuthGuard
-  }, {
-    provide: APP_GUARD,
-    useClass: RolesGuard
-  }],
+  providers: [
+    AuthService,
+    UserService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AuthModule {}

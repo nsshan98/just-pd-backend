@@ -57,7 +57,7 @@ export class AuthService {
   //   };
   // }
 
-    async generateTokens(userId: number) {
+  async generateTokens(userId: number) {
     const payload = { sub: userId };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -86,7 +86,7 @@ export class AuthService {
   //   };
   // }
 
-   async refreshToken(userId: number) {
+  async refreshToken(userId: number) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
 
     // Hash & store refresh token in DB
@@ -110,32 +110,36 @@ export class AuthService {
 
   async validateRefreshToken(userId: number, refreshToken: string) {
     const user = await this.userService.getSingleUser(userId);
-    if (!user || !user.hashed_refresh_token) throw new UnauthorizedException('Invalid refresh token');
+    if (!user || !user.hashed_refresh_token)
+      throw new UnauthorizedException('Invalid refresh token');
 
     console.log('Stored hash', user.hashed_refresh_token);
-    const isMatch = await argon2.verify(user.hashed_refresh_token, refreshToken);
+    const isMatch = await argon2.verify(
+      user.hashed_refresh_token,
+      refreshToken,
+    );
     if (!isMatch) throw new UnauthorizedException('Invalid refresh token');
 
     return { userId: user.id };
   }
 
-  async logout(userId: number) {    
+  async logout(userId: number) {
     await this.userService.updateHashedRefreshToken(userId, null);
-  
+
     return { message: 'Logged out successfully' };
   }
 
-  async validateJwtUser(userId: number){
-    const user = await this.userService.getSingleUser(userId)
-    
+  async validateJwtUser(userId: number) {
+    const user = await this.userService.getSingleUser(userId);
+
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    const currentUser:CurrentUser = {
+    const currentUser: CurrentUser = {
       id: user.id,
       role: user.role,
-    }
+    };
 
     return currentUser;
   }

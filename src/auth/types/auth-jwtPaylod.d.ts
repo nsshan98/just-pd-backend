@@ -1,3 +1,3 @@
 export class AuthJwtPayload {
-    sub: number
+  sub: number;
 }

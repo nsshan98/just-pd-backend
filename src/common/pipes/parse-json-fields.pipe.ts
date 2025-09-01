@@ -1,4 +1,10 @@
-import { Injectable, PipeTransform, BadRequestException, ValidationPipe, ArgumentMetadata } from '@nestjs/common';
+import {
+  Injectable,
+  PipeTransform,
+  BadRequestException,
+  ValidationPipe,
+  ArgumentMetadata,
+} from '@nestjs/common';
 
 @Injectable()
 export class ParseThenValidatePipe implements PipeTransform {
@@ -17,7 +23,9 @@ export class ParseThenValidatePipe implements PipeTransform {
           try {
             value[field] = JSON.parse(value[field]);
           } catch {
-            throw new BadRequestException(`Field ${field} contains invalid JSON`);
+            throw new BadRequestException(
+              `Field ${field} contains invalid JSON`,
+            );
           }
         }
       }

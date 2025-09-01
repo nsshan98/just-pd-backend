@@ -20,93 +20,90 @@ export class AccommodationService {
     });
   }
   async createAccommodation(dto: CreateAccommodationDto, user: User) {
-    
     const accommodation = await this.accommodationRepository.create({
       ...dto,
       amenity: dto.amenity,
       user,
     });
-    
+
     return await this.accommodationRepository.save(accommodation);
   }
 
   async updateAccommodation(id: string, dto: UpdateAccommodationDto) {
-   const accommodation = await this.accommodationRepository.findOne({
-    where: { id },
-    relations: ['amenity', 'user'],
-   });
+    const accommodation = await this.accommodationRepository.findOne({
+      where: { id },
+      relations: ['amenity', 'user'],
+    });
 
-   if(!accommodation) throw new NotFoundException('Accommodation not found')
+    if (!accommodation) throw new NotFoundException('Accommodation not found');
 
-    const { amenity: amenityDto, ...rest} = dto as UpdateAccommodationDto
-    
-    
-    Object.assign(accommodation, rest)
+    const { amenity: amenityDto, ...rest } = dto as UpdateAccommodationDto;
 
-    if(amenityDto){
-      if(accommodation.amenity){
-        Object.assign(accommodation.amenity, amenityDto)
+    Object.assign(accommodation, rest);
+
+    if (amenityDto) {
+      if (accommodation.amenity) {
+        Object.assign(accommodation.amenity, amenityDto);
       }
     }
-    const savedAccommodation = await this.accommodationRepository.save(accommodation)
-
+    const savedAccommodation =
+      await this.accommodationRepository.save(accommodation);
 
     const response = {
       ...savedAccommodation,
       user: {
         id: accommodation.user.id,
         email: accommodation.user.email,
-      }
-    }
+      },
+    };
 
-    return response
+    return response;
   }
 
-//   async updateAccommodation(id: string, dto: UpdateAccommodationDto) {
-//   const accommodation = await this.accommodationRepository.findOne({
-//     where: { id },
-//     relations: ['amenity', 'user'],
-//   });
+  //   async updateAccommodation(id: string, dto: UpdateAccommodationDto) {
+  //   const accommodation = await this.accommodationRepository.findOne({
+  //     where: { id },
+  //     relations: ['amenity', 'user'],
+  //   });
 
-//   if (!accommodation) throw new NotFoundException('Accommodation not found');
+  //   if (!accommodation) throw new NotFoundException('Accommodation not found');
 
-//   // separate nested amenity so we don't accidentally overwrite relation with plain object
-//   const { amenity: amenityDto, ...rest } = dto as UpdateAccommodationDto;
+  //   // separate nested amenity so we don't accidentally overwrite relation with plain object
+  //   const { amenity: amenityDto, ...rest } = dto as UpdateAccommodationDto;
 
-//   // Merge primitive fields / image etc.
-//   Object.assign(accommodation, rest);
+  //   // Merge primitive fields / image etc.
+  //   Object.assign(accommodation, rest);
 
-//   // If amenity DTO present -> update or create
-//   if (amenityDto) {
-//     if (accommodation.amenity) {
-//       // update existing amenity object in-place (cascade: true will persist)
-//       Object.assign(accommodation.amenity, amenityDto);
-//     }
-//   }
+  //   // If amenity DTO present -> update or create
+  //   if (amenityDto) {
+  //     if (accommodation.amenity) {
+  //       // update existing amenity object in-place (cascade: true will persist)
+  //       Object.assign(accommodation.amenity, amenityDto);
+  //     }
+  //   }
 
-//   // save will persist both accommodation and amenity (cascade:true)
-//   const savedAccommodation = await this.accommodationRepository.save(accommodation);
-  
-//   // return this.accommodationRepository.findOne({ where: { id }, relations: ['amenity', 'user'] });
+  //   // save will persist both accommodation and amenity (cascade:true)
+  //   const savedAccommodation = await this.accommodationRepository.save(accommodation);
 
+  //   // return this.accommodationRepository.findOne({ where: { id }, relations: ['amenity', 'user'] });
 
-// const response = {
-//   ...savedAccommodation,
-//   user: {
-//     id: accommodation.user.id,
-//     email: accommodation.user.email,
-//     // no password, no other fields
-//   }
-// };
+  // const response = {
+  //   ...savedAccommodation,
+  //   user: {
+  //     id: accommodation.user.id,
+  //     email: accommodation.user.email,
+  //     // no password, no other fields
+  //   }
+  // };
 
-// return response;
-// }
+  // return response;
+  // }
 
-  async deleteAccommodation(id: string){
-    return await this.accommodationRepository.delete({id})
+  async deleteAccommodation(id: string) {
+    return await this.accommodationRepository.delete({ id });
   }
 
   async getAllAccommodations() {
-    return await this.accommodationRepository.find()
+    return await this.accommodationRepository.find();
   }
 }

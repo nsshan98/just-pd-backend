@@ -64,7 +64,7 @@ export class Accommodation {
 
   @OneToOne(() => Amenity, (amenity) => amenity.accommodation, {
     cascade: true,
-    eager: true
+    eager: true,
   })
   amenity: Amenity;
 

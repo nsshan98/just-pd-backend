@@ -8,8 +8,11 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { Amenity } from 'src/entities/amenity.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Accommodation, Amenity]), CloudinaryModule],
+  imports: [
+    TypeOrmModule.forFeature([Accommodation, Amenity]),
+    CloudinaryModule,
+  ],
   controllers: [AccommodationController],
-  providers: [AccommodationService, CloudinaryService]
+  providers: [AccommodationService, CloudinaryService],
 })
 export class AccommodationModule {}

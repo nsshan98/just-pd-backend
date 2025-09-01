@@ -10,13 +10,19 @@ import { AccommodationModule } from './accommodation/accommodation.module';
 import dbConfig from './config/db.config';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-    expandVariables: true,
-    load: [dbConfig]
-  }),UserModule,AccommodationModule, TypeOrmModule.forRootAsync({
-    useFactory: dbConfig,
-  }), AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      expandVariables: true,
+      load: [dbConfig],
+    }),
+    UserModule,
+    AccommodationModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: dbConfig,
+    }),
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
