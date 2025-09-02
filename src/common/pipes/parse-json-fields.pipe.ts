@@ -12,6 +12,9 @@ export class ParseThenValidatePipe implements PipeTransform {
     transform: true,
     whitelist: true,
     forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
   });
 
   constructor(private fieldsToParse: string[] = []) {}

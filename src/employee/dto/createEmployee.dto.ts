@@ -1,10 +1,11 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 class ImageDto {
   @IsString()
@@ -25,9 +26,25 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   email: string;
 
+  @IsBoolean()
+  @Transform(({ value }): boolean | undefined => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return undefined; // field missing → don’t overwrite
+  })
+  show_email: boolean;
+
   @IsString()
   @IsNotEmpty()
   phone: string;
+
+  @IsBoolean()
+  @Transform(({ value }): boolean | undefined => {
+    if (value === 'true' || value === true) return true;
+    if (value === 'false' || value === false) return false;
+    return undefined; // field missing → don’t overwrite
+  })
+  show_phone: boolean;
 
   @IsString()
   @IsNotEmpty()

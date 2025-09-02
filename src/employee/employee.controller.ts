@@ -67,10 +67,6 @@ export class EmployeeController {
   ) {
     const existingEmployee = await this.employeeService.findOneWithId(id);
     if (!existingEmployee) throw new NotFoundException('Employee not found');
-    console.log(
-      existingEmployee?.image?.image_public_id,
-      'existingEmployee?.image?.image_public_id',
-    );
 
     if (existingEmployee?.user.id !== user.id)
       throw new ForbiddenException(
@@ -80,9 +76,7 @@ export class EmployeeController {
 
     try {
       if (updatedImage) {
-        uploadResult = await this.cloudinaryService.uploadImage(
-          updatedImage as Express.Multer.File,
-        );
+        uploadResult = await this.cloudinaryService.uploadImage(updatedImage);
 
         dto.image = {
           image_url: uploadResult?.secure_url as string,
@@ -98,16 +92,17 @@ export class EmployeeController {
       if (updatedImage && existingEmployee?.image?.image_public_id) {
         await this.cloudinaryService
           .deleteImage(existingEmployee.image.image_public_id)
-          .catch((err) =>
-            console.warn('Failed to delete old image:', err?.message ?? err),
-          );
+          .catch((err) => console.warn('Failed to delete old image:', err));
       }
+
+      console.log(updatedEmployee);
 
       return {
         message: 'Employee Updated Successfully',
         data: updatedEmployee,
       };
     } catch (error) {
+      console.error('Error updating employee:', error);
       if (uploadResult) {
         await this.cloudinaryService
           .deleteImage(uploadResult.public_id)

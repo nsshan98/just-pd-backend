@@ -20,7 +20,13 @@ export class Employee {
   email: string;
 
   @Column()
+  show_email: boolean;
+
+  @Column()
   phone: string;
+
+  @Column()
+  show_phone: boolean;
 
   @Column()
   designation: string;
