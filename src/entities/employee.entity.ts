@@ -14,13 +14,13 @@ export class Employee {
   id: string;
 
   @Column()
-  full_name: string;
+  name: string;
 
   @Column()
   email: string;
 
   @Column()
-  contact_number: string;
+  phone: string;
 
   @Column()
   designation: string;
@@ -33,9 +33,6 @@ export class Employee {
     image_url: string;
     image_public_id: string;
   };
-
-  @Column()
-  gender: string;
 
   @CreateDateColumn()
   created_at: Date;

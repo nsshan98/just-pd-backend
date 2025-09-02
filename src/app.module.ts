@@ -5,9 +5,8 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { AccommodationController } from './accommodation/accommodation.controller';
-import { AccommodationModule } from './accommodation/accommodation.module';
 import dbConfig from './config/db.config';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import dbConfig from './config/db.config';
       load: [dbConfig],
     }),
     UserModule,
-    AccommodationModule,
+    EmployeeModule,
     TypeOrmModule.forRootAsync({
       useFactory: dbConfig,
     }),

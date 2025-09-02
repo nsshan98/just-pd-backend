@@ -14,7 +14,7 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       this.cloudinary.uploader
         .upload_stream(
-          { folder: 'just-pd-backend/accommodation', resource_type: 'auto' },
+          { folder: 'just-pd-backend/employees', resource_type: 'auto' },
           (error, result) => {
             if (error) return reject(error);
             resolve(result as UploadApiResponse);

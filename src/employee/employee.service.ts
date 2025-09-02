@@ -31,17 +31,16 @@ export class EmployeeService {
   async updateEmployee(id: string, dto: UpdateEmployeeDto) {
     const employee = await this.employeeRepository.findOne({
       where: { id },
-      relations: ['user'],
+      // relations: ['user'],
     });
 
     if (!employee) throw new NotFoundException('Employee not found');
 
-    const { ...rest } = dto as UpdateEmployeeDto;
+    const { ...rest } = dto;
 
     Object.assign(employee, rest);
 
     return await this.employeeRepository.save(employee);
-  }
   }
 
   async deleteEmployee(id: string) {
