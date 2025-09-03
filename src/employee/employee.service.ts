@@ -48,6 +48,21 @@ export class EmployeeService {
   }
 
   async getAllEmployees() {
-    return await this.employeeRepository.find();
+    const employees = await this.employeeRepository.find({
+      select: ['name', 'email', 'show_email', 'phone', 'show_phone', 'designation', 'department', 'image'],
+    });
+
+    const result = employees.map((emp) => {
+      return {
+        name: emp.name,
+        email: emp.show_email ? emp.email : null,
+        phone: emp.show_phone ? emp.phone : null,
+        designation: emp.designation,
+        department: emp.department,
+        image: emp.image,
+      };
+    });
+
+    return result;
   }
 }

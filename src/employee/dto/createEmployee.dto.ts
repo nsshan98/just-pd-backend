@@ -5,7 +5,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { ToBoolean } from 'src/common/decorator/transformer';
 
 class ImageDto {
   @IsString()
@@ -27,11 +28,7 @@ export class CreateEmployeeDto {
   email: string;
 
   @IsBoolean()
-  @Transform(({ value }): boolean | undefined => {
-    if (value === 'true' || value === true) return true;
-    if (value === 'false' || value === false) return false;
-    return undefined; // field missing → don’t overwrite
-  })
+  @ToBoolean()
   show_email: boolean;
 
   @IsString()
@@ -39,11 +36,7 @@ export class CreateEmployeeDto {
   phone: string;
 
   @IsBoolean()
-  @Transform(({ value }): boolean | undefined => {
-    if (value === 'true' || value === true) return true;
-    if (value === 'false' || value === false) return false;
-    return undefined; // field missing → don’t overwrite
-  })
+  @ToBoolean()
   show_phone: boolean;
 
   @IsString()

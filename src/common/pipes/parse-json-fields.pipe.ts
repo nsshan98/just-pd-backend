@@ -1,3 +1,4 @@
+// parse-json-and-boolean.pipe.ts
 import {
   Injectable,
   PipeTransform,
@@ -7,7 +8,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class ParseThenValidatePipe implements PipeTransform {
+export class ParseJsonAndBooleanPipe implements PipeTransform {
   private validator = new ValidationPipe({
     transform: true,
     whitelist: true,
@@ -17,11 +18,15 @@ export class ParseThenValidatePipe implements PipeTransform {
     },
   });
 
-  constructor(private fieldsToParse: string[] = []) {}
+  constructor(
+    private jsonFields: string[] = [], // fields to parse as JSON
+    private booleanFields: string[] = [], // fields to convert to boolean
+  ) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
     if (value && typeof value === 'object') {
-      for (const field of this.fieldsToParse) {
+      // 1️⃣ Parse JSON fields
+      for (const field of this.jsonFields) {
         if (typeof value[field] === 'string') {
           try {
             value[field] = JSON.parse(value[field]);
@@ -32,7 +37,18 @@ export class ParseThenValidatePipe implements PipeTransform {
           }
         }
       }
+
+      // 2️⃣ Convert boolean fields
+      for (const field of this.booleanFields) {
+        if (typeof value[field] === 'string') {
+          if (value[field] === 'true') value[field] = true;
+          else if (value[field] === 'false') value[field] = false;
+          else value[field] = undefined; // leave untouched if invalid
+        }
+      }
     }
+
+    // 3️⃣ Run validation + transformation
     return this.validator.transform(value, metadata);
   }
 }
