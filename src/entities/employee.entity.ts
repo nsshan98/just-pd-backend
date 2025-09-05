@@ -34,11 +34,17 @@ export class Employee {
   @Column()
   department: string;
 
-  @Column('json')
+  @Column({ nullable: true })
+  sorting_order: number;
+
+  @Column({ default: true })
+  is_published: boolean;
+
+  @Column('json', { nullable: true })
   image: {
     image_url: string;
     image_public_id: string;
-  };
+  } | null;
 
   @CreateDateColumn()
   created_at: Date;

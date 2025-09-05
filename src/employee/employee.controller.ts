@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -39,18 +38,24 @@ export class EmployeeController {
   @UseInterceptors(FileInterceptor('image'))
   async createEmployee(
     @Body() dto: CreateEmployeeDto,
-    @UploadedFile(new ImageUploadValidationPipe({ required: true }))
-    image: Express.Multer.File,
+    @UploadedFile(new ImageUploadValidationPipe({ required: false }))
+    image: Express.Multer.File | null,
     @AuthenticatedUser() user: User,
   ) {
     {
-      if (!image) throw new BadRequestException('Image is required');
+      // if (!image) throw new BadRequestException('Image is required');
 
-      const uploadResult = await this.cloudinaryService.uploadImage(image);
-      dto.image = {
-        image_url: uploadResult?.secure_url as string,
-        image_public_id: uploadResult?.public_id as string,
-      };
+      if (image) {
+        const uploadResult = await this.cloudinaryService.uploadImage(image);
+        if (uploadResult) {
+          dto.image = {
+            image_url: uploadResult.secure_url,
+            image_public_id: uploadResult.public_id,
+          };
+        }
+      } else {
+        dto.image = null; // ✅ explicitly set null if no image uploaded
+      }
 
       return this.employeeService.createEmployee(dto, user);
     }
@@ -63,7 +68,7 @@ export class EmployeeController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() dto: UpdateEmployeeDto,
     @UploadedFile(new ImageUploadValidationPipe({ required: false }))
-    updatedImage: Express.Multer.File | undefined,
+    updatedImage: Express.Multer.File | null,
     @AuthenticatedUser() user: User,
   ) {
     const existingEmployee = await this.employeeService.findOneWithId(id);
@@ -73,7 +78,7 @@ export class EmployeeController {
       throw new ForbiddenException(
         'You are not allowed to update this employee',
       );
-    let uploadResult: UploadApiResponse | undefined;
+    let uploadResult: UploadApiResponse | null = null;
 
     try {
       if (updatedImage) {
@@ -83,6 +88,17 @@ export class EmployeeController {
           image_url: uploadResult?.secure_url as string,
           image_public_id: uploadResult?.public_id as string,
         };
+      }
+
+      // Inside updateEmployee
+      if (!updatedImage && dto.image == null) {
+        // remove old image
+        if (existingEmployee.image?.image_public_id) {
+          await this.cloudinaryService
+            .deleteImage(existingEmployee.image.image_public_id)
+            .catch(() => {});
+        }
+        dto.image = null; // remove image from DB
       }
 
       const updatedEmployee = await this.employeeService.updateEmployee(
@@ -104,7 +120,7 @@ export class EmployeeController {
       };
     } catch (error) {
       console.error('Error updating employee:', error);
-      if (uploadResult) {
+      if (uploadResult && uploadResult.public_id) {
         await this.cloudinaryService
           .deleteImage(uploadResult.public_id)
           .catch(() => {});
@@ -149,7 +165,20 @@ export class EmployeeController {
     const departments = await this.employeeService.getAllDepartments();
     return {
       message: 'All Departments Fetched Successfully',
+      count: departments.length,
       data: departments,
+    };
+  }
+
+  @Public()
+  @Get('department/:department')
+  async getEmployeesByDepartment(@Param('department') department: string) {
+    const employees =
+      await this.employeeService.getEmployeesByDepartment(department);
+    return {
+      message: `Employees from department: ${department}`,
+      count: employees.length,
+      data: employees,
     };
   }
 }

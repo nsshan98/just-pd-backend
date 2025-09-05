@@ -8,7 +8,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ParseJsonAndBooleanPipe(
       ['amenity'], // JSON fields
-      ['show_email', 'show_phone'], // Boolean fields
+      ['show_email', 'show_phone', 'is_published'], // Boolean fields
     ),
   );
 

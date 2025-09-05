@@ -9,8 +9,8 @@ export class CloudinaryService {
 
   async uploadImage(
     file?: Express.Multer.File,
-  ): Promise<UploadApiResponse | undefined> {
-    if (!file) return undefined;
+  ): Promise<UploadApiResponse | null> {
+    if (!file) return null;
     return new Promise((resolve, reject) => {
       this.cloudinary.uploader
         .upload_stream(

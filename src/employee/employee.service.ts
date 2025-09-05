@@ -20,12 +20,18 @@ export class EmployeeService {
     });
   }
   async createEmployee(dto: CreateEmployeeDto, user: User) {
-    const employee = await this.employeeRepository.create({
+    const employee = this.employeeRepository.create({
       ...dto,
       user,
     });
 
-    return await this.employeeRepository.save(employee);
+    const saved = await this.employeeRepository.save(employee);
+    return {
+      id: saved.id,
+      name: saved.name,
+      email: saved.email,
+      image: saved.image ?? null,
+    };
   }
 
   async updateEmployee(id: string, dto: UpdateEmployeeDto) {
@@ -57,6 +63,8 @@ export class EmployeeService {
         'show_phone',
         'designation',
         'department',
+        'sorting_order',
+        'is_published',
         'image',
       ],
     });
@@ -64,10 +72,12 @@ export class EmployeeService {
     const result = employees.map((emp) => {
       return {
         name: emp.name,
-        email: emp.show_email ? emp.email : null,
-        phone: emp.show_phone ? emp.phone : null,
+        email: emp.email,
+        phone: emp.phone,
         designation: emp.designation,
         department: emp.department,
+        sorting_order: emp.sorting_order,
+        is_published: emp.is_published,
         image: emp.image,
       };
     });
@@ -83,5 +93,36 @@ export class EmployeeService {
 
     // result = [{ department: "HR" }, { department: "IT" }, ...]
     return result.map((row) => row.department);
+  }
+
+  async getEmployeesByDepartment(department: string) {
+    return this.employeeRepository
+      .find({
+        where: { department },
+        select: [
+          'name',
+          'email',
+          'show_email',
+          'phone',
+          'show_phone',
+          'designation',
+          'department',
+          'sorting_order',
+          'is_published',
+          'image',
+        ],
+      })
+      .then((employees) =>
+        employees.map((emp) => ({
+          name: emp.name,
+          email: emp.show_email ? emp.email : null,
+          phone: emp.show_phone ? emp.phone : null,
+          designation: emp.designation,
+          department: emp.department,
+          sorting_order: emp.sorting_order,
+          is_published: emp.is_published,
+          image: emp.image,
+        })),
+      );
   }
 }

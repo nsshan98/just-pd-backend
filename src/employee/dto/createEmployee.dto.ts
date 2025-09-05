@@ -1,11 +1,12 @@
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ToBoolean } from 'src/common/decorator/transformer';
 
 class ImageDto {
@@ -47,8 +48,17 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   department: string;
 
+  @IsNumber()
+  @IsOptional()
+  sorting_order?: number;
+
+  @IsBoolean()
+  @ToBoolean()
+  is_published: boolean;
+
   @ValidateNested()
   @Type(() => ImageDto)
   @IsOptional()
-  image?: ImageDto;
+  @Transform(({ value }) => (value === '' ? null : value))
+  image?: ImageDto | null;
 }
