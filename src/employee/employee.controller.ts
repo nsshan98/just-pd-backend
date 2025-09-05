@@ -24,6 +24,7 @@ import { UploadApiResponse } from 'cloudinary';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
+import { Public } from 'src/auth/decorators/public.decorators';
 // import { ParseJsonFieldsPipe } from 'src/common/pipes/parse-json-fields.pipe';
 
 @Controller('employee')
@@ -139,6 +140,16 @@ export class EmployeeController {
     return {
       message: 'All Employees Fetched Successfully',
       data: allEmployees,
+    };
+  }
+
+  @Public()
+  @Get('departments')
+  async getDepartments() {
+    const departments = await this.employeeService.getAllDepartments();
+    return {
+      message: 'All Departments Fetched Successfully',
+      data: departments,
     };
   }
 }

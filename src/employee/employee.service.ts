@@ -49,7 +49,16 @@ export class EmployeeService {
 
   async getAllEmployees() {
     const employees = await this.employeeRepository.find({
-      select: ['name', 'email', 'show_email', 'phone', 'show_phone', 'designation', 'department', 'image'],
+      select: [
+        'name',
+        'email',
+        'show_email',
+        'phone',
+        'show_phone',
+        'designation',
+        'department',
+        'image',
+      ],
     });
 
     const result = employees.map((emp) => {
@@ -64,5 +73,15 @@ export class EmployeeService {
     });
 
     return result;
+  }
+
+  async getAllDepartments(): Promise<string[]> {
+    const result = await this.employeeRepository
+      .createQueryBuilder('employee')
+      .select('DISTINCT employee.department', 'department')
+      .getRawMany();
+
+    // result = [{ department: "HR" }, { department: "IT" }, ...]
+    return result.map((row) => row.department);
   }
 }
