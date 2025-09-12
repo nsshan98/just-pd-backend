@@ -56,6 +56,7 @@ export class EmployeeService {
   async getAllEmployees() {
     const employees = await this.employeeRepository.find({
       select: [
+        'id',
         'name',
         'email',
         'show_email',
@@ -71,6 +72,7 @@ export class EmployeeService {
 
     const result = employees.map((emp) => {
       return {
+        id: emp.id,
         name: emp.name,
         email: emp.email,
         phone: emp.phone,
@@ -100,6 +102,7 @@ export class EmployeeService {
       .find({
         where: { department },
         select: [
+          'id',
           'name',
           'email',
           'show_email',
@@ -114,6 +117,7 @@ export class EmployeeService {
       })
       .then((employees) =>
         employees.map((emp) => ({
+          id: emp.id,
           name: emp.name,
           email: emp.show_email ? emp.email : null,
           phone: emp.show_phone ? emp.phone : null,
