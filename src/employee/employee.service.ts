@@ -68,6 +68,7 @@ export class EmployeeService {
         'is_published',
         'image',
       ],
+      order: { created_at: 'DESC' },
     });
 
     const result = employees.map((emp) => {
@@ -75,7 +76,9 @@ export class EmployeeService {
         id: emp.id,
         name: emp.name,
         email: emp.email,
+        show_email: emp.show_email,
         phone: emp.phone,
+        show_phone: emp.show_phone,
         designation: emp.designation,
         department: emp.department,
         sorting_order: emp.sorting_order,
