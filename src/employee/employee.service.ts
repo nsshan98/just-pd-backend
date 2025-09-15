@@ -90,6 +90,43 @@ export class EmployeeService {
     return result;
   }
 
+  async showAllEmployees() {
+    const employees = await this.employeeRepository.find({
+      select: [
+        'id',
+        'name',
+        'email',
+        'show_email',
+        'phone',
+        'show_phone',
+        'designation',
+        'department',
+        'sorting_order',
+        'is_published',
+        'image',
+      ],
+      where: { is_published: true },
+    });
+
+    const result = employees.map((emp) => {
+      return {
+        id: emp.id,
+        name: emp.name,
+        email: emp.email,
+        show_email: emp.show_email,
+        phone: emp.phone,
+        show_phone: emp.show_phone,
+        designation: emp.designation,
+        department: emp.department,
+        sorting_order: emp.sorting_order,
+        is_published: emp.is_published,
+        image: emp.image,
+      };
+    });
+
+    return result;
+  }
+
   async getAllDepartments(): Promise<string[]> {
     const result = await this.employeeRepository
       .createQueryBuilder('employee')
@@ -103,7 +140,6 @@ export class EmployeeService {
   async getEmployeesByDepartment(department: string) {
     return this.employeeRepository
       .find({
-        where: { department },
         select: [
           'id',
           'name',
@@ -117,6 +153,8 @@ export class EmployeeService {
           'is_published',
           'image',
         ],
+        where: { department, is_published: true },
+        order: { sorting_order: 'ASC' },
       })
       .then((employees) =>
         employees.map((emp) => ({

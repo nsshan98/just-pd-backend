@@ -91,14 +91,17 @@ export class EmployeeController {
       }
 
       // Inside updateEmployee
-      if (!updatedImage && dto.image == null) {
-        // remove old image
+      if (!updatedImage && dto.image === null) {
+        // User explicitly wants to remove image
         if (existingEmployee.image?.image_public_id) {
           await this.cloudinaryService
             .deleteImage(existingEmployee.image.image_public_id)
             .catch(() => {});
         }
-        dto.image = null; // remove image from DB
+        dto.image = null;
+      } else if (!updatedImage && dto.image === undefined) {
+        // User did not send anything about image → keep existing
+        delete dto.image;
       }
 
       const updatedEmployee = await this.employeeService.updateEmployee(
@@ -153,6 +156,16 @@ export class EmployeeController {
   @Get('all-employees')
   async getAllEmployees() {
     const allEmployees = await this.employeeService.getAllEmployees();
+    return {
+      message: 'All Employees Fetched Successfully',
+      data: allEmployees,
+    };
+  }
+
+  @Public()
+  @Get('show-all-employees')
+  async showAllEmployees() {
+    const allEmployees = await this.employeeService.showAllEmployees();
     return {
       message: 'All Employees Fetched Successfully',
       data: allEmployees,
