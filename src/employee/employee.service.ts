@@ -30,6 +30,13 @@ export class EmployeeService {
       id: saved.id,
       name: saved.name,
       email: saved.email,
+      show_email: saved.show_email,
+      phone: saved.phone,
+      show_phone: saved.show_phone,
+      designation: saved.designation,
+      department: saved.department,
+      sorting_order: saved.sorting_order,
+      is_published: saved.is_published,
       image: saved.image ?? null,
     };
   }
@@ -112,10 +119,8 @@ export class EmployeeService {
       return {
         id: emp.id,
         name: emp.name,
-        email: emp.email,
-        show_email: emp.show_email,
-        phone: emp.phone,
-        show_phone: emp.show_phone,
+        email: emp.show_email ? emp.email : null,
+        phone: emp.show_phone ? emp.phone : null,
         designation: emp.designation,
         department: emp.department,
         sorting_order: emp.sorting_order,

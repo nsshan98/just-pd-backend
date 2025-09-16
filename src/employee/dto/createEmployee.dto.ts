@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -8,6 +9,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ToBoolean } from 'src/common/decorator/transformer';
+import { Departments } from '../enum/departmentTypes.enum';
 
 class ImageDto {
   @IsString()
@@ -44,9 +46,9 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   designation: string;
 
-  @IsString()
+  @IsEnum(Departments)
   @IsNotEmpty()
-  department: string;
+  department: Departments;
 
   @IsNumber()
   @IsOptional()

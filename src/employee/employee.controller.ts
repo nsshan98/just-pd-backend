@@ -42,23 +42,21 @@ export class EmployeeController {
     image: Express.Multer.File | null,
     @AuthenticatedUser() user: User,
   ) {
-    {
-      // if (!image) throw new BadRequestException('Image is required');
+    // if (!image) throw new BadRequestException('Image is required');
 
-      if (image) {
-        const uploadResult = await this.cloudinaryService.uploadImage(image);
-        if (uploadResult) {
-          dto.image = {
-            image_url: uploadResult.secure_url,
-            image_public_id: uploadResult.public_id,
-          };
-        }
-      } else {
-        dto.image = null; // ✅ explicitly set null if no image uploaded
+    if (image) {
+      const uploadResult = await this.cloudinaryService.uploadImage(image);
+      if (uploadResult) {
+        dto.image = {
+          image_url: uploadResult.secure_url,
+          image_public_id: uploadResult.public_id,
+        };
       }
-
-      return this.employeeService.createEmployee(dto, user);
+    } else {
+      dto.image = null; // ✅ explicitly set null if no image uploaded
     }
+
+    return this.employeeService.createEmployee(dto, user);
   }
 
   @Roles(Role.USER)
