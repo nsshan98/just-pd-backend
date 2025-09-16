@@ -33,7 +33,7 @@ export class EmployeeController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Post('create')
   @UseInterceptors(FileInterceptor('image'))
   async createEmployee(
@@ -62,7 +62,7 @@ export class EmployeeController {
     return this.employeeService.createEmployee(dto, user);
   }
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Patch('update/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateEmployee(
@@ -135,7 +135,7 @@ export class EmployeeController {
     }
   }
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Delete('delete/:id')
   async deleteEmployee(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -156,7 +156,7 @@ export class EmployeeController {
     return { message: 'Employee Deleted Successfully' };
   }
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Get('all-employees')
   async getAllEmployees() {
     const allEmployees = await this.employeeService.getAllEmployees();

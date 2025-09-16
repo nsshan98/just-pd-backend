@@ -48,7 +48,7 @@ export class UserController {
     return this.userService.updateUser(id, dto);
   }
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Delete(':id')
   async deleteUser(@Param('id', ParseIntPipe) id) {
     const deleteUser = await this.userService.deleteUser(id);
