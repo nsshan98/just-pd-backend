@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async getAllUsers(paginationDto: PaginationDto) {
-    console.log(paginationDto);
+    // console.log(paginationDto);
     return await this.userReporsitory.find({
       skip: paginationDto.skip,
       take: paginationDto.limit ?? DEFAULT_PAGINATION_LIMIT,

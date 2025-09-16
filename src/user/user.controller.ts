@@ -39,7 +39,7 @@ export class UserController {
 
   @Get()
   getAllUsers(@Query() paginationDto: PaginationDto) {
-    console.log(paginationDto);
+    // console.log(paginationDto);
     return this.userService.getAllUsers(paginationDto);
   }
 

@@ -21,10 +21,10 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
     if (!user) throw new UnauthorizedException('User not found');
 
-    // const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-    // if (!isPasswordMatch)
-    //   throw new UnauthorizedException('Invalid Credentials');
+    if (!isPasswordMatch)
+      throw new UnauthorizedException('Invalid Credentials');
 
     return user;
   }
@@ -91,7 +91,7 @@ export class AuthService {
 
     // Hash & store refresh token in DB
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    console.log('New hashed refresh token', hashedRefreshToken);
+    // console.log('New hashed refresh token', hashedRefreshToken);
 
     await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
 
@@ -113,7 +113,7 @@ export class AuthService {
     if (!user || !user.hashed_refresh_token)
       throw new UnauthorizedException('Invalid refresh token');
 
-    console.log('Stored hash', user.hashed_refresh_token);
+    // console.log('Stored hash', user.hashed_refresh_token);
     const isMatch = await argon2.verify(
       user.hashed_refresh_token,
       refreshToken,

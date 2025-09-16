@@ -1,8 +1,4 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  PipeTransform,
-} from '@nestjs/common';
+import { BadRequestException, PipeTransform } from '@nestjs/common';
 
 interface ImageUploadValidation {
   required?: boolean;
@@ -26,7 +22,7 @@ export class ImageUploadValidationPipe implements PipeTransform {
       throw new BadRequestException('Unsupported file type');
     }
 
-    const maxFileSize = 2 * 1024 * 1024;
+    const maxFileSize = 5 * 1024 * 1024;
     if (file.size > maxFileSize) {
       throw new BadRequestException('File size is too large');
     }

@@ -32,7 +32,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
       ?.replace('Bearer ', '')
       .trim();
     const userId = payload.sub;
-    console.log(userId, 'userId');
+    // console.log(userId, 'userId');
 
     if (!refreshToken) {
       throw new Error(

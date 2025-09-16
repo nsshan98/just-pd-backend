@@ -9,12 +9,14 @@ export class CloudinaryService {
 
   async uploadImage(
     file?: Express.Multer.File,
+    department: string = 'general',
   ): Promise<UploadApiResponse | null> {
     if (!file) return null;
     return new Promise((resolve, reject) => {
+      const folderPath = `just-pd-backend/employees/${department}`;
       this.cloudinary.uploader
         .upload_stream(
-          { folder: 'just-pd-backend/employees', resource_type: 'auto' },
+          { folder: folderPath, resource_type: 'auto' },
           (error, result) => {
             if (error) return reject(error);
             resolve(result as UploadApiResponse);

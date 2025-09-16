@@ -45,7 +45,10 @@ export class EmployeeController {
     // if (!image) throw new BadRequestException('Image is required');
 
     if (image) {
-      const uploadResult = await this.cloudinaryService.uploadImage(image);
+      const uploadResult = await this.cloudinaryService.uploadImage(
+        image,
+        dto.department,
+      );
       if (uploadResult) {
         dto.image = {
           image_url: uploadResult.secure_url,
@@ -80,7 +83,10 @@ export class EmployeeController {
 
     try {
       if (updatedImage) {
-        uploadResult = await this.cloudinaryService.uploadImage(updatedImage);
+        uploadResult = await this.cloudinaryService.uploadImage(
+          updatedImage,
+          dto.department,
+        );
 
         dto.image = {
           image_url: uploadResult?.secure_url as string,
@@ -113,7 +119,7 @@ export class EmployeeController {
           .catch((err) => console.warn('Failed to delete old image:', err));
       }
 
-      console.log(updatedEmployee);
+      // console.log(updatedEmployee);
 
       return {
         message: 'Employee Updated Successfully',
