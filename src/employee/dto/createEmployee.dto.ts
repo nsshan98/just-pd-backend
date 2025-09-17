@@ -27,7 +27,7 @@ export class CreateEmployeeDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   email: string;
 
   @IsBoolean()
@@ -35,12 +35,20 @@ export class CreateEmployeeDto {
   show_email: boolean;
 
   @IsString()
-  @IsNotEmpty()
-  phone: string;
+  @IsOptional()
+  official_phone: string;
 
   @IsBoolean()
   @ToBoolean()
-  show_phone: boolean;
+  show_official_phone: boolean;
+
+  @IsString()
+  @IsOptional()
+  personal_phone: string;
+
+  @IsBoolean()
+  @ToBoolean()
+  show_personal_phone: boolean;
 
   @IsString()
   @IsNotEmpty()

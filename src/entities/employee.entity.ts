@@ -16,17 +16,23 @@ export class Employee {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true, length: 255 })
   email: string;
 
-  @Column()
+  @Column({ default: true })
   show_email: boolean;
 
-  @Column()
-  phone: string;
+  @Column({ nullable: true, length: 20 })
+  official_phone: string;
 
-  @Column()
-  show_phone: boolean;
+  @Column({ default: true })
+  show_official_phone: boolean;
+
+  @Column({ nullable: true, length: 20 })
+  personal_phone: string;
+
+  @Column({ default: true })
+  show_personal_phone: boolean;
 
   @Column()
   designation: string;
