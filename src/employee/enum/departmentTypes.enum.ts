@@ -1,4 +1,5 @@
 export enum Departments {
+  // Academic Departments
   CSE = 'Computer Science and Engineering (CSE)',
   IPE = 'Industrial and Production Engineering (IPE)',
   PME = 'Petroleum and Mining Engineering (PME)',
@@ -28,4 +29,49 @@ export enum Departments {
   MKT = 'Marketing (MKT)',
   FB = 'Finance and Banking (FB)',
   DVM = 'Veterinary Medicine (DVM)',
+
+  // Faculties
+  FET = 'Faculty of Engineering & Technology',
+  FAST = 'Faculty of Applied Science & Technology',
+  FBST = 'Faculty of Biological Science & Technology',
+  FHS = 'Faculty of Health Science',
+  FS = 'Faculty of Science',
+  FVM = 'Faculty of Veterinary Medicine',
+  FASS = 'Faculty of Arts and Social Science',
+  FBS = 'Faculty of Business Studies',
+
+  // Offices
+  VC = 'Office of the Vice Chancellor',
+  TREASURER = 'Office of the Treasurer',
+  REGISTRAR = 'Office of the Registrar',
+  ICT = 'Office of the ICT Cell',
+  LIBRARIAN = 'Office of the Librarian',
+  PROCTOR = 'Office of the Proctor',
+  COUNSELING = 'Office of the Student Counseling and Guidance',
+  ACCOUNTS = 'Office of the Director of Accounts',
+  PLANNING = 'Office of the Director of Planning, Development & Works',
+  CONTROLLER = 'Office of the Controller of Examinations',
+  ENGINEER = 'Office of the Chief Engineer',
+  MEDICAL = 'Office of the Chief Medical Officer',
+  TRANSPORT = 'Office of the Transport Administrator',
+  AUDIT = 'Audit Cell',
+  PR = 'Public relation branch (Registrar Office)',
+
+  // Halls
+  SMRH = 'Shaheed Mashiur Rahman Hall',
+  TRH = 'Taposhi Rabeya Hall',
+  MMMH = 'Munshi Mohammad Meherullah Hall',
+  BTBH = 'Beerprotik Taramon Bibi Hall',
+
+  // Institutes & Centers
+  IHER = 'Institute for Higher Education and Research (IHER)',
+  RESEARCH_CELL = 'Office of the Research Cell',
+  IQAC = 'Institutional Quality Assurance Cell (IQAC)',
+  CSIRL = 'CSIRL',
+  GENOME = 'Genome Centre',
+  ISC = 'International Service Center (ISC)',
+  PE = 'Office of the Physical Education',
+  TSC = 'Teachers and Students Centre (TSC)',
+  CYBER = 'Cyber Centre',
+  FISH = 'Modern Fish Hatchery and Wet Lab',
 }

@@ -145,6 +145,7 @@ export class EmployeeService {
     const result = await this.employeeRepository
       .createQueryBuilder('employee')
       .select('DISTINCT employee.department', 'department')
+      .orderBy('employee.department', 'ASC')
       .getRawMany();
 
     // result = [{ department: "HR" }, { department: "IT" }, ...]
