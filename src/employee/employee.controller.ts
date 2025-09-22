@@ -188,12 +188,34 @@ export class EmployeeController {
   }
 
   @Public()
+  @Get('offices')
+  async getOffices() {
+    const offices = await this.employeeService.getAllOffices();
+    return {
+      message: 'All Offices Fetched Successfully',
+      count: offices.length,
+      data: offices,
+    };
+  }
+
+  @Public()
   @Get('department/:department')
   async getEmployeesByDepartment(@Param('department') department: string) {
     const employees =
       await this.employeeService.getEmployeesByDepartment(department);
     return {
-      message: `Employees from department: ${department}`,
+      message: `${department}`,
+      count: employees.length,
+      data: employees,
+    };
+  }
+
+  @Public()
+  @Get('office/:office')
+  async getEmployeesByOffice(@Param('office') office: string) {
+    const employees = await this.employeeService.getEmployeesByOffice(office);
+    return {
+      message: `${office}`,
       count: employees.length,
       data: employees,
     };

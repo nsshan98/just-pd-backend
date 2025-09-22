@@ -41,6 +41,9 @@ export class Employee {
   department: string;
 
   @Column({ nullable: true })
+  type: string;
+
+  @Column({ nullable: true })
   sorting_order: number;
 
   @Column({ default: true })

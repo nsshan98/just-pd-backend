@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from 'src/entities/employee.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 import { CreateEmployeeDto } from './dto/createEmployee.dto';
 import { UpdateEmployeeDto } from './dto/updateEmployee.dto';
+import { departments, offices } from './constants/allDeptOffice';
 
 @Injectable()
 export class EmployeeService {
@@ -20,12 +25,27 @@ export class EmployeeService {
     });
   }
   async createEmployee(dto: CreateEmployeeDto, user: User) {
+    let category: 'Department' | 'Office' | null = null;
+
+    if (departments.includes(dto.department)) {
+      category = 'Department';
+    } else if (offices.includes(dto.department)) {
+      category = 'Office';
+    } else {
+      throw new BadRequestException(
+        `Invalid department: ${dto.department}. Must be a valid Department or Office.`,
+      );
+    }
+
     const employee = this.employeeRepository.create({
+      type: category,
       ...dto,
       user,
     });
 
     const saved = await this.employeeRepository.save(employee);
+    console.log('saved employee:', saved);
+
     return {
       id: saved.id,
       name: saved.name,
@@ -37,6 +57,7 @@ export class EmployeeService {
       show_personal_phone: saved.show_personal_phone,
       designation: saved.designation,
       department: saved.department,
+      type: saved.type,
       sorting_order: saved.sorting_order,
       is_published: saved.is_published,
       image: saved.image ?? null,
@@ -145,6 +166,19 @@ export class EmployeeService {
     const result = await this.employeeRepository
       .createQueryBuilder('employee')
       .select('DISTINCT employee.department', 'department')
+      .where('employee.type = :type', { type: 'Department' })
+      .orderBy('employee.department', 'ASC')
+      .getRawMany();
+
+    // result = [{ department: "HR" }, { department: "IT" }, ...]
+    return result.map((row) => row.department);
+  }
+
+  async getAllOffices(): Promise<string[]> {
+    const result = await this.employeeRepository
+      .createQueryBuilder('employee')
+      .select('DISTINCT employee.department', 'department')
+      .where('employee.type = :type', { type: 'Office' })
       .orderBy('employee.department', 'ASC')
       .getRawMany();
 
@@ -170,7 +204,44 @@ export class EmployeeService {
           'is_published',
           'image',
         ],
-        where: { department, is_published: true },
+        where: { department, is_published: true, type: 'Department' },
+        order: { sorting_order: 'ASC' },
+      })
+      .then((employees) =>
+        employees.map((emp) => ({
+          id: emp.id,
+          name: emp.name,
+          email: emp.show_email ? emp.email : null,
+          official_phone: emp.show_official_phone ? emp.official_phone : null,
+          personal_phone: emp.show_personal_phone ? emp.personal_phone : null,
+          designation: emp.designation,
+          department: emp.department,
+          sorting_order: emp.sorting_order,
+          is_published: emp.is_published,
+          image: emp.image,
+        })),
+      );
+  }
+
+  async getEmployeesByOffice(department: string) {
+    return this.employeeRepository
+      .find({
+        select: [
+          'id',
+          'name',
+          'email',
+          'show_email',
+          'official_phone',
+          'show_official_phone',
+          'personal_phone',
+          'show_personal_phone',
+          'designation',
+          'department',
+          'sorting_order',
+          'is_published',
+          'image',
+        ],
+        where: { department, is_published: true, type: 'Office' },
         order: { sorting_order: 'ASC' },
       })
       .then((employees) =>
