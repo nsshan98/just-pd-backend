@@ -44,6 +44,9 @@ export class Employee {
   type: string;
 
   @Column({ nullable: true })
+  serial: number;
+
+  @Column({ nullable: true })
   sorting_order: number;
 
   @Column({ default: true })

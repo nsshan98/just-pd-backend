@@ -26,11 +26,17 @@ export class EmployeeService {
   }
   async createEmployee(dto: CreateEmployeeDto, user: User) {
     let category: 'Department' | 'Office' | null = null;
+    let serial: number | null = null;
 
-    if (departments.includes(dto.department)) {
+    const dept = departments.find((d) => d.value === dto.department);
+    const office = offices.find((o) => o.value === dto.department);
+
+    if (dept) {
       category = 'Department';
-    } else if (offices.includes(dto.department)) {
+      serial = dept.serial;
+    } else if (office) {
       category = 'Office';
+      serial = office.serial;
     } else {
       throw new BadRequestException(
         `Invalid department: ${dto.department}. Must be a valid Department or Office.`,
@@ -39,12 +45,13 @@ export class EmployeeService {
 
     const employee = this.employeeRepository.create({
       type: category,
+      serial: serial,
       ...dto,
       user,
     });
 
     const saved = await this.employeeRepository.save(employee);
-    console.log('saved employee:', saved);
+    // console.log('saved employee:', saved);
 
     return {
       id: saved.id,
@@ -165,12 +172,13 @@ export class EmployeeService {
   async getAllDepartments(): Promise<string[]> {
     const result = await this.employeeRepository
       .createQueryBuilder('employee')
-      .select('DISTINCT employee.department', 'department')
+      .select('employee.department', 'department')
+      .addSelect('MIN(employee.serial)', 'serial') // pick the smallest serial per department
       .where('employee.type = :type', { type: 'Department' })
-      .orderBy('employee.department', 'ASC')
+      .groupBy('employee.department') // group by department
+      .orderBy('serial', 'ASC') // order by serial
       .getRawMany();
 
-    // result = [{ department: "HR" }, { department: "IT" }, ...]
     return result.map((row) => row.department);
   }
 
@@ -178,8 +186,10 @@ export class EmployeeService {
     const result = await this.employeeRepository
       .createQueryBuilder('employee')
       .select('DISTINCT employee.department', 'department')
+      .addSelect('MIN(employee.serial)', 'serial')
       .where('employee.type = :type', { type: 'Office' })
-      .orderBy('employee.department', 'ASC')
+      .groupBy('employee.department')
+      .orderBy('serial', 'ASC')
       .getRawMany();
 
     // result = [{ department: "HR" }, { department: "IT" }, ...]
