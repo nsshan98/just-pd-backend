@@ -33,7 +33,7 @@ export class EmployeeController {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  @Roles(Role.USER)
+  @Roles(Role.SUPPA_DUPPA_ADMIN)
   @Post('create')
   @UseInterceptors(FileInterceptor('image'))
   async createEmployee(
