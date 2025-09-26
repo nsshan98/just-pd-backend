@@ -60,7 +60,7 @@ export enum Departments {
   IHER = 'Institute For Higher Education and Research (IHER)',
   RESEARCH_CELL = 'Office Of The Research Cell',
   IQAC = 'Institutional Quality Assurance Cell (IQAC)',
-  CSIRL = 'CSIRL',
+  CSIRL = 'Centre For Sophisticated Instrumentation and Research Laboratory (CSIRL)',
   GENOME = 'Genome Centre',
   ISC = 'International Service Center (ISC)',
   PE = 'Office Of The Physical Education',
