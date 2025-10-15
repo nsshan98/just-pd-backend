@@ -75,7 +75,7 @@ export const offices = [
   { serial: 25, value: 'Teachers and Students Centre (TSC)' },
   { serial: 26, value: 'Shaheed Mashiur Rahman Hall' },
   { serial: 27, value: 'Taposhi Rabeya Hall' },
-  { serial: 28, value: 'Munshi Mohammad Meherullah Hall' },
+  { serial: 28, value: 'Munshi Meherullah Hall' },
   { serial: 29, value: 'Beerprotik Taramon Bibi Hall' },
   { serial: 30, value: 'Modern Fish Hatchery and Wet Lab' },
 ];
